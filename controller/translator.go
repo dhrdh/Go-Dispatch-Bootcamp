@@ -1,54 +1,75 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 
 	"Go-Dispatch-Bootcamp/types"
 )
 
 type usecase interface {
-	FetchCsvFromRemote() (bool, error)
-	FetchJson() (*types.Json, error)
+	Fetch() (*[]types.User, error)
+	FetchById(int) (*types.User, error)
 }
 
 type translatorController struct {
 	usecase usecase
 }
 
-func (tc *translatorController) UpdateFromRemote(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | UpdateFromRemote")
-
-	success, err := tc.usecase.FetchCsvFromRemote()
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Error: %v", err)
-
-		log.Fatalf("FetchCsvFromRemote error: %v", err)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprintf("{ success: { %v } }", success)))
-}
-
 func (tc *translatorController) Fetch(w http.ResponseWriter, r *http.Request) {
 	log.Println("In controller | Fetch")
 
-	result, err := tc.usecase.FetchJson()
+	users, err := tc.usecase.Fetch()
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Error: %v", err)
-
-		log.Fatalf("FetchCsvFromRemote error: %v", err)
+		fmt.Fprintf(w, "Fetch error: %v", err)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(result.Data)
+
+	data, _ := json.Marshal(users)
+	w.Write(data)
+}
+
+func (tc *translatorController) FetchById(w http.ResponseWriter, r *http.Request) {
+	log.Println("In controller | FetchById")
+
+	vars := mux.Vars(r)
+	stringId, ok := vars["id"]
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "FetchById error: id is not defined")
+		return
+	}
+
+	id, err := strconv.Atoi(stringId)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, fmt.Sprintf("FetchById error: Id '%v' is not a number", stringId))
+		return
+	}
+
+	user, err := tc.usecase.FetchById(id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, fmt.Sprintf("FetchById error: %v", err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	data, _ := json.Marshal(user)
+	w.Write(data)
 }
 
 func New(uc usecase) *translatorController {

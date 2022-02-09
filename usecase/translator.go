@@ -1,16 +1,15 @@
 package usecase
 
 import (
+	"Go-Dispatch-Bootcamp/types"
+	"errors"
 	"fmt"
 	"log"
-	"Go-Dispatch-Bootcamp/types"
 )
 
 type translatorService interface {
-	FetchCsvFromRemote() (*types.Csv, error)
-	SaveCsvToFile(*types.Csv) (bool, error)
-	ReadCsvFromFile() (*types.Csv, error)
-	ConvertCsvToJson(doc *types.Csv) (*types.Json, error)
+	GetUsers() (*[]types.User, error)
+	GetUsersMap() (map[int]types.User, error)
 }
 
 type translatorUsecase struct {
@@ -25,38 +24,32 @@ func New(s translatorService) *translatorUsecase {
 	}
 }
 
-func (tu *translatorUsecase) FetchCsvFromRemote() (bool, error) {
-	log.Println("In usecase | FetchCsvFromRemote")
+func (tu *translatorUsecase) Fetch() (*[]types.User, error) {
+	log.Println("In usecase | Fetch")
 
-	csv, err := tu.service.FetchCsvFromRemote()
-
-	if err != nil {
-		return false, fmt.Errorf("FetchCsvFromRemote error: %v", err)
-	}
-
-	success, err := tu.service.SaveCsvToFile(csv)
+	users, err := tu.service.GetUsers()
 
 	if err != nil {
-		return false, fmt.Errorf("FetchCsvFromRemote error: %v", err)
+		return nil, err
 	}
 
-	return success, nil
+	return users, nil
 }
 
-func (tu *translatorUsecase) FetchJson() (*types.Json, error) {
-	log.Println("In usecase | FetchCsvFromRemote")
+func (tu *translatorUsecase) FetchById(id int) (*types.User, error) {
+	log.Println("In usecase | FetchById")
 
-	csvDoc, err := tu.service.ReadCsvFromFile()
-
-	if err != nil {
-		return nil, fmt.Errorf("FetchCsvFromRemote error: %v", err)
-	}
-
-	jsonDoc, err := tu.service.ConvertCsvToJson(csvDoc)
+	users, err := tu.service.GetUsersMap()
 
 	if err != nil {
-		return nil, fmt.Errorf("FetchCsvFromRemote error: %v", err)
+		return nil, err
 	}
 
-	return jsonDoc, nil
+	result, ok := users[id]
+
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("User with id: %v was not found", id))
+	}
+
+	return &result, nil
 }

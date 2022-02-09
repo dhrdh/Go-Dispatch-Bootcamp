@@ -3,16 +3,16 @@ package service
 import (
 	"Go-Dispatch-Bootcamp/types"
 	"encoding/csv"
-	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"strconv"
 )
 
-const sampleCsvUrl = "https://support.staffbase.com/hc/en-us/article_attachments/360009197031/username.csv"
 const fileName = "data.csv"
 
-type translatorService struct {}
+type translatorService struct{}
 
 func New() *translatorService {
 	log.Println("In service | constructor")
@@ -20,94 +20,69 @@ func New() *translatorService {
 	return &translatorService{}
 }
 
-func (ts *translatorService) FetchCsvFromRemote() (*types.Csv, error) {
-	url := sampleCsvUrl
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-	reader := csv.NewReader(resp.Body)
-	reader.Comma = ';'
-	data, err := reader.ReadAll()
-	if err != nil {
-		return nil, err
-	}
-
-	result := types.Csv {
-		Lines: data,
-	}
-
-	return &result, nil
-}
-
-func (ts *translatorService) SaveCsvToFile(doc *types.Csv) (bool, error) {
-	file, err := os.Create(fileName)
-	defer file.Close()
-	if err != nil {
-		return false, err
-	}
-
-	w := csv.NewWriter(file)
-	defer w.Flush()
-	err = w.WriteAll(doc.Lines)
-	if err != nil {
-		return false, err
-	}
-
-	log.Println("data.csv was updated")
-
-	return true, nil
-}
-
-func (ts *translatorService) ReadCsvFromFile() (*types.Csv, error) {
+func (ts *translatorService) readCsvFromFile() ([][]string, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("can not open file")
 	}
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("read file error")
 	}
-
-	return &types.Csv{ Lines: records }, nil
+	return records, nil
 }
 
-type user struct {
-	Username string `json:"username"`
-	Identifier string `json:"identifier"`
-	FirstName string `json:"firstName"`
-	LastName string `json:"lastName"`
-}
-
-func (ts *translatorService) ConvertCsvToJson(doc *types.Csv) (*types.Json, error) {
-	var users []user
-
-	for i, line := range doc.Lines {
-		// skip table title
-		if i == 0 {
-			continue
-		}
-
-		users = append(users, user {
-			line[0],
-			line[1],
-			line[2],
-			line[3],
-		})
-	}
-
-	data, err := json.Marshal(users)
-
+func (ts *translatorService) GetUsers() (*[]types.User, error) {
+	records, err := ts.readCsvFromFile()
 	if err != nil {
 		return nil, err
 	}
 
-	result := types.Json {
-		Data: data,
+	var users []types.User
+
+	for _, line := range records {
+		id, err := strconv.Atoi(line[0])
+
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("Id '%v' is not a number", line[0]))
+		}
+
+		users = append(users, types.User{
+			Id:         id,
+			Username:   line[1],
+			Identifier: line[2],
+			FirstName:  line[3],
+			LastName:   line[4],
+		})
 	}
-	return &result, nil
+
+	return &users, nil
+}
+
+func (ts *translatorService) GetUsersMap() (map[int]types.User, error) {
+	records, err := ts.readCsvFromFile()
+	if err != nil {
+		return nil, err
+	}
+
+	users := make(map[int]types.User, len(records))
+
+	for _, line := range records {
+		id, err := strconv.Atoi(line[0])
+
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("Id '%v' is not a number", line[0]))
+		}
+
+		users[id] = types.User{
+			Id:         id,
+			Username:   line[1],
+			Identifier: line[2],
+			FirstName:  line[3],
+			LastName:   line[4],
+		}
+	}
+
+	return users, nil
 }
