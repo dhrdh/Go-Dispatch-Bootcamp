@@ -17,13 +17,14 @@ type usecase interface {
 	Fetch() (*[]types.User, error)
 	FetchById(int) (*types.User, error)
 	Feed() ([][]string, error)
+	UpdateUsersFromFeed() (bool, error)
 }
 
-type translatorController struct {
+type demoController struct {
 	usecase usecase
 }
 
-func (tc *translatorController) Fetch(w http.ResponseWriter, r *http.Request) {
+func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
 	log.Println("In controller | Fetch")
 
 	users, err := tc.usecase.Fetch()
@@ -41,7 +42,7 @@ func (tc *translatorController) Fetch(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func (tc *translatorController) FetchById(w http.ResponseWriter, r *http.Request) {
+func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 	log.Println("In controller | FetchById")
 
 	vars := mux.Vars(r)
@@ -75,7 +76,7 @@ func (tc *translatorController) FetchById(w http.ResponseWriter, r *http.Request
 	w.Write(data)
 }
 
-func (tc *translatorController) Feed(w http.ResponseWriter, r *http.Request) {
+func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
 	log.Println("In controller | Feed")
 
 	users, err := tc.usecase.Feed()
@@ -93,10 +94,26 @@ func (tc *translatorController) Feed(w http.ResponseWriter, r *http.Request) {
 	w.Write(b.Bytes())
 }
 
-func New(uc usecase) *translatorController {
+func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request) {
+	log.Println("In controller | UpdateUsersFromFeed")
+
+	success, err := tc.usecase.UpdateUsersFromFeed()
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "UpdateUsersFromFeed error: %v", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprintf("{ success: { %v } }", success)))
+}
+
+func New(uc usecase) *demoController {
 	log.Println("In controller | constructor")
 
-	return &translatorController{
+	return &demoController{
 		usecase: uc,
 	}
 }

@@ -11,10 +11,10 @@ import (
 )
 
 func main() {
-	translatorService := service.New()
-	translatorUsecase := usecase.New(translatorService)
-	translatorController := controller.New(translatorUsecase)
-	httpRouter := router.Setup(translatorController)
+	demoService := service.New()
+	demoUsecase := usecase.New(demoService)
+	demoController := controller.New(demoUsecase)
+	httpRouter := router.Setup(demoController)
 
 	err := http.ListenAndServe("localhost:8080", httpRouter)
 
