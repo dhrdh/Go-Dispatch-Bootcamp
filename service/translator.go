@@ -85,26 +85,6 @@ func (ts *translatorService) GetUsersMap() (map[int]types.User, error) {
 	return users, nil
 }
 
-func (ts *translatorService) GetFeedUsers() (*[]types.FeedUser, error) {
-	records, err := ts.readCsvFromFile("feed.csv")
-	if err != nil {
-		return nil, err
-	}
-
-	var users []types.FeedUser
-
-	for i, line := range records {
-		if i == 0 {
-			continue
-		}
-
-		users = append(users, types.FeedUser{
-			Username:   line[0],
-			Identifier: line[1],
-			FirstName:  line[2],
-			LastName:   line[3],
-		})
-	}
-
-	return &users, nil
+func (ts *translatorService) GetFeedUsers() ([][]string, error) {
+	return ts.readCsvFromFile("feed.csv")
 }

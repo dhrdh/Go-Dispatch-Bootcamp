@@ -10,7 +10,7 @@ import (
 type translatorService interface {
 	GetUsers() (*[]types.User, error)
 	GetUsersMap() (map[int]types.User, error)
-	GetFeedUsers() (*[]types.FeedUser, error)
+	GetFeedUsers() ([][]string, error)
 }
 
 type translatorUsecase struct {
@@ -55,14 +55,8 @@ func (tu *translatorUsecase) FetchById(id int) (*types.User, error) {
 	return &result, nil
 }
 
-func (tu *translatorUsecase) Feed() (*[]types.FeedUser, error) {
+func (tu *translatorUsecase) Feed() ([][]string, error) {
 	log.Println("In usecase | Fetch")
 
-	users, err := tu.service.GetFeedUsers()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
+	return tu.service.GetFeedUsers()
 }

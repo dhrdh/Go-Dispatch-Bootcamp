@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -14,7 +16,7 @@ import (
 type usecase interface {
 	Fetch() (*[]types.User, error)
 	FetchById(int) (*types.User, error)
-	Feed() (*[]types.FeedUser, error)
+	Feed() ([][]string, error)
 }
 
 type translatorController struct {
@@ -85,10 +87,10 @@ func (tc *translatorController) Feed(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-
-	data, _ := json.Marshal(users)
-	w.Write(data)
+	b := new(bytes.Buffer)
+	csvWriter := csv.NewWriter(b)
+	csvWriter.WriteAll(users)
+	w.Write(b.Bytes())
 }
 
 func New(uc usecase) *translatorController {
