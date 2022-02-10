@@ -10,6 +10,7 @@ import (
 type TranslatorController interface {
 	Fetch(w http.ResponseWriter, r *http.Request)
 	FetchById(w http.ResponseWriter, r *http.Request)
+	Feed(w http.ResponseWriter, r *http.Request)
 }
 
 func Setup(c TranslatorController) *mux.Router {
@@ -21,6 +22,7 @@ func Setup(c TranslatorController) *mux.Router {
 
 	v1.HandleFunc("/fetch", c.Fetch).Methods(http.MethodGet).Name("Fetch")
 	v1.HandleFunc("/fetch/{id}", c.FetchById).Methods(http.MethodGet).Name("FetchById")
+	v1.HandleFunc("/feed", c.Feed).Methods(http.MethodGet).Name("Feed")
 
 	return r
 }

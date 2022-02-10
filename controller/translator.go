@@ -14,6 +14,7 @@ import (
 type usecase interface {
 	Fetch() (*[]types.User, error)
 	FetchById(int) (*types.User, error)
+	Feed() (*[]types.FeedUser, error)
 }
 
 type translatorController struct {
@@ -69,6 +70,24 @@ func (tc *translatorController) FetchById(w http.ResponseWriter, r *http.Request
 	w.Header().Set("Content-Type", "application/json")
 
 	data, _ := json.Marshal(user)
+	w.Write(data)
+}
+
+func (tc *translatorController) Feed(w http.ResponseWriter, r *http.Request) {
+	log.Println("In controller | Feed")
+
+	users, err := tc.usecase.Feed()
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Feed error: %v", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	data, _ := json.Marshal(users)
 	w.Write(data)
 }
 

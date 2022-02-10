@@ -10,8 +10,6 @@ import (
 	"strconv"
 )
 
-const fileName = "data.csv"
-
 type translatorService struct{}
 
 func New() *translatorService {
@@ -20,8 +18,8 @@ func New() *translatorService {
 	return &translatorService{}
 }
 
-func (ts *translatorService) readCsvFromFile() ([][]string, error) {
-	file, err := os.Open(fileName)
+func (ts *translatorService) readCsvFromFile(path string) ([][]string, error) {
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, errors.New("can not open file")
 	}
@@ -34,7 +32,7 @@ func (ts *translatorService) readCsvFromFile() ([][]string, error) {
 }
 
 func (ts *translatorService) GetUsers() (*[]types.User, error) {
-	records, err := ts.readCsvFromFile()
+	records, err := ts.readCsvFromFile("data.csv")
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +59,7 @@ func (ts *translatorService) GetUsers() (*[]types.User, error) {
 }
 
 func (ts *translatorService) GetUsersMap() (map[int]types.User, error) {
-	records, err := ts.readCsvFromFile()
+	records, err := ts.readCsvFromFile("data.csv")
 	if err != nil {
 		return nil, err
 	}
@@ -85,4 +83,28 @@ func (ts *translatorService) GetUsersMap() (map[int]types.User, error) {
 	}
 
 	return users, nil
+}
+
+func (ts *translatorService) GetFeedUsers() (*[]types.FeedUser, error) {
+	records, err := ts.readCsvFromFile("feed.csv")
+	if err != nil {
+		return nil, err
+	}
+
+	var users []types.FeedUser
+
+	for i, line := range records {
+		if i == 0 {
+			continue
+		}
+
+		users = append(users, types.FeedUser{
+			Username:   line[0],
+			Identifier: line[1],
+			FirstName:  line[2],
+			LastName:   line[3],
+		})
+	}
+
+	return &users, nil
 }
