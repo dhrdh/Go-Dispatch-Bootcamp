@@ -138,10 +138,6 @@ func Test_demoController_Feed(t *testing.T) {
 }
 
 func Test_demoController_UpdateUsersFromFeed(t *testing.T) {
-	type args struct {
-		w http.ResponseWriter
-		r *http.Request
-	}
 	tests := []struct {
 		name    string
 		ucData  bool
