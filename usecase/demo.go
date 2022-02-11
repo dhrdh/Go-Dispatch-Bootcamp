@@ -7,12 +7,16 @@ import (
 	"log"
 )
 
+const feedUrl = "http://localhost:8080/api/v1/feed"
+const dataFileName = "data/data.csv"
+const feedFileName = "data/feed.csv"
+
 type demoService interface {
-	GetUsers() (*[]types.User, error)
-	GetUsersMap() (map[int]types.User, error)
-	GetFeedUsers() ([][]string, error)
-	FetchCsvFromRemote() ([][]string, error)
-	UpdateUsers(*[]types.User) (bool, error)
+	GetUsers(string) (*[]types.User, error)
+	GetUsersMap(string) (map[int]types.User, error)
+	GetFeedUsers(string) ([][]string, error)
+	FetchCsvFromRemote(string) ([][]string, error)
+	UpdateUsers(*[]types.User, string) (bool, error)
 }
 
 type demoUsecase struct {
@@ -30,7 +34,7 @@ func New(s demoService) *demoUsecase {
 func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 	log.Println("In usecase | Fetch")
 
-	users, err := tu.service.GetUsers()
+	users, err := tu.service.GetUsers(dataFileName)
 
 	if err != nil {
 		return nil, err
@@ -42,7 +46,7 @@ func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 	log.Println("In usecase | FetchById")
 
-	users, err := tu.service.GetUsersMap()
+	users, err := tu.service.GetUsersMap(dataFileName)
 
 	if err != nil {
 		return nil, err
@@ -60,13 +64,13 @@ func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 func (tu *demoUsecase) Feed() ([][]string, error) {
 	log.Println("In usecase | Feed")
 
-	return tu.service.GetFeedUsers()
+	return tu.service.GetFeedUsers(feedFileName)
 }
 
 func (tu *demoUsecase) UpdateUsersFromFeed() (bool, error) {
 	log.Println("In usecase | UpdateUsersFromFeed")
 
-	csvUsers, err := tu.service.FetchCsvFromRemote()
+	csvUsers, err := tu.service.FetchCsvFromRemote(feedUrl)
 
 	if err != nil {
 		return false, err
@@ -91,5 +95,5 @@ func (tu *demoUsecase) UpdateUsersFromFeed() (bool, error) {
 		users = append(users, user)
 	}
 
-	return tu.service.UpdateUsers(&users)
+	return tu.service.UpdateUsers(&users, dataFileName)
 }

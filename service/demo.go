@@ -1,7 +1,6 @@
 package service
 
 import (
-	"Go-Dispatch-Bootcamp/types"
 	"encoding/csv"
 	"errors"
 	"fmt"
@@ -9,11 +8,9 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-)
 
-const feedUrl = "http://localhost:8080/api/v1/feed"
-const dataFileName = "data/data.csv"
-const feedFileName = "data/feed.csv"
+	"Go-Dispatch-Bootcamp/types"
+)
 
 type demoService struct{}
 
@@ -38,7 +35,7 @@ func (ts *demoService) readCsvFromFile(path string) ([][]string, error) {
 	return records, nil
 }
 
-func (ts *demoService) FetchCsvFromRemote() ([][]string, error) {
+func (ts *demoService) FetchCsvFromRemote(feedUrl string) ([][]string, error) {
 	log.Println("In service | FetchCsvFromRemote")
 
 	url := feedUrl
@@ -59,7 +56,7 @@ func (ts *demoService) FetchCsvFromRemote() ([][]string, error) {
 	return data, nil
 }
 
-func (ts *demoService) UpdateUsers(users *[]types.User) (bool, error) {
+func (ts *demoService) UpdateUsers(users *[]types.User, dataFileName string) (bool, error) {
 	log.Println("In service | UpdateUsers")
 
 	file, err := os.Create(dataFileName)
@@ -94,7 +91,7 @@ func (ts *demoService) UpdateUsers(users *[]types.User) (bool, error) {
 	return true, nil
 }
 
-func (ts *demoService) GetUsers() (*[]types.User, error) {
+func (ts *demoService) GetUsers(dataFileName string) (*[]types.User, error) {
 	log.Println("In service | GetUsers")
 
 	records, err := ts.readCsvFromFile(dataFileName)
@@ -123,7 +120,7 @@ func (ts *demoService) GetUsers() (*[]types.User, error) {
 	return &users, nil
 }
 
-func (ts *demoService) GetUsersMap() (map[int]types.User, error) {
+func (ts *demoService) GetUsersMap(dataFileName string) (map[int]types.User, error) {
 	log.Println("In service | GetUsersMap")
 
 	records, err := ts.readCsvFromFile(dataFileName)
@@ -152,7 +149,7 @@ func (ts *demoService) GetUsersMap() (map[int]types.User, error) {
 	return users, nil
 }
 
-func (ts *demoService) GetFeedUsers() ([][]string, error) {
+func (ts *demoService) GetFeedUsers(feedFileName string) ([][]string, error) {
 	log.Println("In service | GetFeedUsers")
 
 	return ts.readCsvFromFile(feedFileName)

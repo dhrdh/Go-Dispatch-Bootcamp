@@ -13,13 +13,13 @@ type DemoService struct {
 	mock.Mock
 }
 
-// FetchCsvFromRemote provides a mock function with given fields:
-func (_m *DemoService) FetchCsvFromRemote() ([][]string, error) {
-	ret := _m.Called()
+// FetchCsvFromRemote provides a mock function with given fields: _a0
+func (_m *DemoService) FetchCsvFromRemote(_a0 string) ([][]string, error) {
+	ret := _m.Called(_a0)
 
 	var r0 [][]string
-	if rf, ok := ret.Get(0).(func() [][]string); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) [][]string); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([][]string)
@@ -27,8 +27,8 @@ func (_m *DemoService) FetchCsvFromRemote() ([][]string, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -36,13 +36,13 @@ func (_m *DemoService) FetchCsvFromRemote() ([][]string, error) {
 	return r0, r1
 }
 
-// GetFeedUsers provides a mock function with given fields:
-func (_m *DemoService) GetFeedUsers() ([][]string, error) {
-	ret := _m.Called()
+// GetFeedUsers provides a mock function with given fields: _a0
+func (_m *DemoService) GetFeedUsers(_a0 string) ([][]string, error) {
+	ret := _m.Called(_a0)
 
 	var r0 [][]string
-	if rf, ok := ret.Get(0).(func() [][]string); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) [][]string); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([][]string)
@@ -50,8 +50,8 @@ func (_m *DemoService) GetFeedUsers() ([][]string, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -59,13 +59,13 @@ func (_m *DemoService) GetFeedUsers() ([][]string, error) {
 	return r0, r1
 }
 
-// GetUsers provides a mock function with given fields:
-func (_m *DemoService) GetUsers() (*[]types.User, error) {
-	ret := _m.Called()
+// GetUsers provides a mock function with given fields: _a0
+func (_m *DemoService) GetUsers(_a0 string) (*[]types.User, error) {
+	ret := _m.Called(_a0)
 
 	var r0 *[]types.User
-	if rf, ok := ret.Get(0).(func() *[]types.User); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) *[]types.User); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*[]types.User)
@@ -73,8 +73,8 @@ func (_m *DemoService) GetUsers() (*[]types.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -82,13 +82,13 @@ func (_m *DemoService) GetUsers() (*[]types.User, error) {
 	return r0, r1
 }
 
-// GetUsersMap provides a mock function with given fields:
-func (_m *DemoService) GetUsersMap() (map[int]types.User, error) {
-	ret := _m.Called()
+// GetUsersMap provides a mock function with given fields: _a0
+func (_m *DemoService) GetUsersMap(_a0 string) (map[int]types.User, error) {
+	ret := _m.Called(_a0)
 
 	var r0 map[int]types.User
-	if rf, ok := ret.Get(0).(func() map[int]types.User); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) map[int]types.User); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[int]types.User)
@@ -96,8 +96,8 @@ func (_m *DemoService) GetUsersMap() (map[int]types.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -105,20 +105,20 @@ func (_m *DemoService) GetUsersMap() (map[int]types.User, error) {
 	return r0, r1
 }
 
-// UpdateUsers provides a mock function with given fields: _a0
-func (_m *DemoService) UpdateUsers(_a0 *[]types.User) (bool, error) {
-	ret := _m.Called(_a0)
+// UpdateUsers provides a mock function with given fields: _a0, _a1
+func (_m *DemoService) UpdateUsers(_a0 *[]types.User, _a1 string) (bool, error) {
+	ret := _m.Called(_a0, _a1)
 
 	var r0 bool
-	if rf, ok := ret.Get(0).(func(*[]types.User) bool); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(*[]types.User, string) bool); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*[]types.User) error); ok {
-		r1 = rf(_a0)
+	if rf, ok := ret.Get(1).(func(*[]types.User, string) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -44,7 +44,7 @@ func Test_demoUsecase_Fetch(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ds.On("GetUsers").Return(&tt.dsData, tt.dsError)
+			ds.On("GetUsers", dataFileName).Return(&tt.dsData, tt.dsError)
 
 			uc := demoUsecase{
 				service: ds,
@@ -79,7 +79,7 @@ func Test_demoUsecase_FetchById(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ds.On("GetUsersMap").Return(tt.dsData, tt.dsError)
+			ds.On("GetUsersMap", dataFileName).Return(tt.dsData, tt.dsError)
 
 			uc := demoUsecase{
 				service: ds,
@@ -112,7 +112,7 @@ func Test_demoUsecase_Feed(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ds.On("GetFeedUsers").Return(tt.dsData, tt.dsError)
+			ds.On("GetFeedUsers", feedFileName).Return(tt.dsData, tt.dsError)
 
 			uc := demoUsecase{
 				service: ds,
@@ -151,8 +151,8 @@ func Test_demoUsecase_UpdateUsersFromFeed(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ds.On("FetchCsvFromRemote").Return(tt.dsFetchCsvFromRemoteData, tt.dsFetchCsvFromRemoteError)
-			ds.On("UpdateUsers", tt.dsUpdateUsersParameter).Return(tt.dsUpdateUsersData, tt.dsUpdateUsersError)
+			ds.On("FetchCsvFromRemote", feedUrl).Return(tt.dsFetchCsvFromRemoteData, tt.dsFetchCsvFromRemoteError)
+			ds.On("UpdateUsers", tt.dsUpdateUsersParameter, dataFileName).Return(tt.dsUpdateUsersData, tt.dsUpdateUsersError)
 
 			uc := demoUsecase{
 				service: ds,
