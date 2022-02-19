@@ -25,8 +25,6 @@ type demoController struct {
 }
 
 func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | Fetch")
-
 	users, err := tc.usecase.Fetch()
 
 	if err != nil {
@@ -43,8 +41,6 @@ func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | FetchById")
-
 	vars := mux.Vars(r)
 	stringId, ok := vars["id"]
 	if !ok {
@@ -77,8 +73,6 @@ func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | Feed")
-
 	users, err := tc.usecase.Feed()
 
 	if err != nil {
@@ -95,8 +89,6 @@ func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | UpdateUsersFromFeed")
-
 	success, err := tc.usecase.UpdateUsersFromFeed()
 
 	if err != nil {
@@ -111,8 +103,6 @@ func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Req
 }
 
 func New(uc usecase) *demoController {
-	log.Println("In controller | constructor")
-
 	return &demoController{
 		usecase: uc,
 	}

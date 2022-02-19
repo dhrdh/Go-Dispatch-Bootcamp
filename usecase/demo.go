@@ -3,7 +3,6 @@ package usecase
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"Go-Dispatch-Bootcamp/types"
 )
@@ -25,16 +24,12 @@ type demoUsecase struct {
 }
 
 func New(s demoService) *demoUsecase {
-	log.Println("In usecase | constructor")
-
 	return &demoUsecase{
 		service: s,
 	}
 }
 
 func (tu *demoUsecase) Fetch() (*[]types.User, error) {
-	log.Println("In usecase | Fetch")
-
 	users, err := tu.service.GetUsers(dataFileName)
 
 	if err != nil {
@@ -45,8 +40,6 @@ func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 }
 
 func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
-	log.Println("In usecase | FetchById")
-
 	users, err := tu.service.GetUsersMap(dataFileName)
 
 	if err != nil {
@@ -63,14 +56,10 @@ func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 }
 
 func (tu *demoUsecase) Feed() ([][]string, error) {
-	log.Println("In usecase | Feed")
-
 	return tu.service.GetFeedUsers(feedFileName)
 }
 
 func (tu *demoUsecase) UpdateUsersFromFeed() (bool, error) {
-	log.Println("In usecase | UpdateUsersFromFeed")
-
 	csvUsers, err := tu.service.FetchCsvFromRemote(feedUrl)
 
 	if err != nil {

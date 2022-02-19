@@ -1,7 +1,6 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,14 +8,13 @@ import (
 
 type demoController interface {
 	Fetch(w http.ResponseWriter, r *http.Request)
+	FetchConcurrently(w http.ResponseWriter, r *http.Request)
 	FetchById(w http.ResponseWriter, r *http.Request)
 	Feed(w http.ResponseWriter, r *http.Request)
 	UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request)
 }
 
 func Setup(c demoController) *mux.Router {
-	log.Println("In router | Setup")
-
 	r := mux.NewRouter()
 
 	v1 := r.PathPrefix("/api/v1").Subrouter()

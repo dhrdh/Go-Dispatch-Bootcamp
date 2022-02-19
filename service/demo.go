@@ -15,14 +15,10 @@ import (
 type demoService struct{}
 
 func New() *demoService {
-	log.Println("In service | constructor")
-
 	return &demoService{}
 }
 
 func (ts *demoService) readCsvFromFile(path string) ([][]string, error) {
-	log.Println("In service | readCsvFromFile")
-
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, errors.New("can not open file")
@@ -36,8 +32,6 @@ func (ts *demoService) readCsvFromFile(path string) ([][]string, error) {
 }
 
 func (ts *demoService) FetchCsvFromRemote(feedUrl string) ([][]string, error) {
-	log.Println("In service | FetchCsvFromRemote")
-
 	url := feedUrl
 
 	resp, err := http.Get(url)
@@ -57,8 +51,6 @@ func (ts *demoService) FetchCsvFromRemote(feedUrl string) ([][]string, error) {
 }
 
 func (ts *demoService) UpdateUsers(users *[]types.User, dataFileName string) (bool, error) {
-	log.Println("In service | UpdateUsers")
-
 	file, err := os.Create(dataFileName)
 	defer file.Close()
 	if err != nil {
@@ -92,8 +84,6 @@ func (ts *demoService) UpdateUsers(users *[]types.User, dataFileName string) (bo
 }
 
 func (ts *demoService) GetUsers(dataFileName string) (*[]types.User, error) {
-	log.Println("In service | GetUsers")
-
 	records, err := ts.readCsvFromFile(dataFileName)
 	if err != nil {
 		return nil, err
@@ -121,8 +111,6 @@ func (ts *demoService) GetUsers(dataFileName string) (*[]types.User, error) {
 }
 
 func (ts *demoService) GetUsersMap(dataFileName string) (map[int]types.User, error) {
-	log.Println("In service | GetUsersMap")
-
 	records, err := ts.readCsvFromFile(dataFileName)
 	if err != nil {
 		return nil, err
@@ -150,7 +138,5 @@ func (ts *demoService) GetUsersMap(dataFileName string) (map[int]types.User, err
 }
 
 func (ts *demoService) GetFeedUsers(feedFileName string) ([][]string, error) {
-	log.Println("In service | GetFeedUsers")
-
 	return ts.readCsvFromFile(feedFileName)
 }
