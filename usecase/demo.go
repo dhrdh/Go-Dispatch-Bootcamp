@@ -1,10 +1,11 @@
 package usecase
 
 import (
-	"Go-Dispatch-Bootcamp/types"
 	"errors"
 	"fmt"
 	"log"
+
+	"Go-Dispatch-Bootcamp/types"
 )
 
 const feedUrl = "http://localhost:8080/api/v1/feed"

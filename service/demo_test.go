@@ -1,12 +1,14 @@
 package service
 
 import (
-	"Go-Dispatch-Bootcamp/types"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"reflect"
 	"strings"
 	"testing"
+
+	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var (

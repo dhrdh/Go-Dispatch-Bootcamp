@@ -5,12 +5,12 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"strconv"
 
 	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/gorilla/mux"
 )
 
 type usecase interface {

@@ -1,11 +1,13 @@
 package usecase
 
 import (
-	"Go-Dispatch-Bootcamp/mocks"
-	"Go-Dispatch-Bootcamp/types"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"Go-Dispatch-Bootcamp/mocks"
+	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var (
