@@ -13,6 +13,7 @@ const feedFileName = "data/feed.csv"
 
 type demoService interface {
 	GetUsers(string) (*[]types.User, error)
+	GetUsersConcurrently(string, string, int, int) (*[]types.User, error)
 	GetUsersMap(string) (map[int]types.User, error)
 	GetFeedUsers(string) ([][]string, error)
 	FetchCsvFromRemote(string) ([][]string, error)
@@ -31,6 +32,16 @@ func New(s demoService) *demoUsecase {
 
 func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 	users, err := tu.service.GetUsers(dataFileName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (tu *demoUsecase) FetchConcurrently(idType string, items int, itemsPerWorker int) (*[]types.User, error) {
+	users, err := tu.service.GetUsersConcurrently(dataFileName, idType, items, itemsPerWorker)
 
 	if err != nil {
 		return nil, err
