@@ -28,6 +28,11 @@ func (_m *DemoController) FetchById(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 
+// FetchConcurrently provides a mock function with given fields: w, r
+func (_m *DemoController) FetchConcurrently(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 // UpdateUsersFromFeed provides a mock function with given fields: w, r
 func (_m *DemoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
