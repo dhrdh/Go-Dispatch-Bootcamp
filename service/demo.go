@@ -17,6 +17,7 @@ import (
 
 type demoService struct{}
 
+// New - creates new instance of the service.
 func New() *demoService {
 	return &demoService{}
 }
@@ -34,6 +35,7 @@ func (ts *demoService) readCsvFromFile(path string) ([][]string, error) {
 	return records, nil
 }
 
+// FetchCsvFromRemote - downloads csv from the remote and returns the data.
 func (ts *demoService) FetchCsvFromRemote(feedUrl string) ([][]string, error) {
 	url := feedUrl
 
@@ -53,6 +55,7 @@ func (ts *demoService) FetchCsvFromRemote(feedUrl string) ([][]string, error) {
 	return data, nil
 }
 
+// UpdateUsers - save new set of users to data.csv.
 func (ts *demoService) UpdateUsers(users *[]types.User, dataFileName string) (bool, error) {
 	file, err := os.Create(dataFileName)
 	defer file.Close()
@@ -86,6 +89,7 @@ func (ts *demoService) UpdateUsers(users *[]types.User, dataFileName string) (bo
 	return true, nil
 }
 
+// GetUsers - parse all users from data.csv and returns them in array format.
 func (ts *demoService) GetUsers(dataFileName string) (*[]types.User, error) {
 	records, err := ts.readCsvFromFile(dataFileName)
 	if err != nil {
@@ -113,6 +117,7 @@ func (ts *demoService) GetUsers(dataFileName string) (*[]types.User, error) {
 	return &users, nil
 }
 
+// GetUsersConcurrently - parse required amount of users from data.csv in concurrent mode and returns them in array format.
 func (ts *demoService) GetUsersConcurrently(dataFileName string, idType string, items int, itemsPerWorker int) (*[]types.User, error) {
 	if !contains([]string{"odd", "even"}, idType) {
 		idType = "both"
@@ -196,6 +201,7 @@ func process(resultChannel chan<- types.User, endChannel chan<- int, idType stri
 	}
 }
 
+// GetUsersMap  - parse all users from data.csv and returns them in map format.
 func (ts *demoService) GetUsersMap(dataFileName string) (map[int]types.User, error) {
 	records, err := ts.readCsvFromFile(dataFileName)
 	if err != nil {
@@ -223,6 +229,7 @@ func (ts *demoService) GetUsersMap(dataFileName string) (map[int]types.User, err
 	return users, nil
 }
 
+// GetFeedUsers - read feed.csv file and returns the data.
 func (ts *demoService) GetFeedUsers(feedFileName string) ([][]string, error) {
 	return ts.readCsvFromFile(feedFileName)
 }

@@ -24,12 +24,14 @@ type demoUsecase struct {
 	service demoService
 }
 
+// New - creates new instance of the usecase.
 func New(s demoService) *demoUsecase {
 	return &demoUsecase{
 		service: s,
 	}
 }
 
+// Fetch - returns all users.
 func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 	users, err := tu.service.GetUsers(dataFileName)
 
@@ -40,6 +42,7 @@ func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 	return users, nil
 }
 
+// FetchConcurrently - returns required amount of users in concurrent mode.
 func (tu *demoUsecase) FetchConcurrently(idType string, items int, itemsPerWorker int) (*[]types.User, error) {
 	users, err := tu.service.GetUsersConcurrently(dataFileName, idType, items, itemsPerWorker)
 
@@ -50,6 +53,7 @@ func (tu *demoUsecase) FetchConcurrently(idType string, items int, itemsPerWorke
 	return users, nil
 }
 
+// FetchById - returns user by id.
 func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 	users, err := tu.service.GetUsersMap(dataFileName)
 
@@ -66,10 +70,12 @@ func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 	return &result, nil
 }
 
+// Feed - returns data in csv format. Contains feed for users.
 func (tu *demoUsecase) Feed() ([][]string, error) {
 	return tu.service.GetFeedUsers(feedFileName)
 }
 
+// UpdateUsersFromFeed - makes call to feed endpoint and update users in data.csv.
 func (tu *demoUsecase) UpdateUsersFromFeed() (bool, error) {
 	csvUsers, err := tu.service.FetchCsvFromRemote(feedUrl)
 

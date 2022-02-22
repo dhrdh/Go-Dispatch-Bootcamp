@@ -25,6 +25,7 @@ type demoController struct {
 	usecase usecase
 }
 
+// Fetch - fetch all users.
 func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
 	users, err := tc.usecase.Fetch()
 
@@ -41,6 +42,7 @@ func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+// FetchConcurrently - fetch required amount of users in concurrent mode.
 func (tc *demoController) FetchConcurrently(w http.ResponseWriter, r *http.Request) {
 	idType := r.URL.Query().Get("type")
 
@@ -71,6 +73,7 @@ func (tc *demoController) FetchConcurrently(w http.ResponseWriter, r *http.Reque
 	w.Write(data)
 }
 
+// FetchById - fetch user by id.
 func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	stringId, ok := vars["id"]
@@ -103,6 +106,7 @@ func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+// Feed - provides the feed for user's storage.
 func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
 	users, err := tc.usecase.Feed()
 
@@ -119,6 +123,7 @@ func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
 	w.Write(b.Bytes())
 }
 
+// UpdateUsersFromFeed - updates user's storage with data from the feed.
 func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request) {
 	success, err := tc.usecase.UpdateUsersFromFeed()
 
@@ -133,6 +138,7 @@ func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Req
 	w.Write([]byte(fmt.Sprintf("{ success: { %v } }", success)))
 }
 
+// New - creates new instance of the controller.
 func New(uc usecase) *demoController {
 	return &demoController{
 		usecase: uc,

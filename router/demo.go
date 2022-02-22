@@ -14,6 +14,7 @@ type demoController interface {
 	UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request)
 }
 
+// Setup - configures the router
 func Setup(c demoController) *mux.Router {
 	r := mux.NewRouter()
 
