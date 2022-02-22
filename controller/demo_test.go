@@ -1,14 +1,16 @@
 package controller
 
 import (
-	"Go-Dispatch-Bootcamp/mocks"
-	"Go-Dispatch-Bootcamp/types"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+
+	"Go-Dispatch-Bootcamp/mocks"
+	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
 
 var (

@@ -82,6 +82,29 @@ func (_m *DemoService) GetUsers(_a0 string) (*[]types.User, error) {
 	return r0, r1
 }
 
+// GetUsersConcurrently provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *DemoService) GetUsersConcurrently(_a0 string, _a1 string, _a2 int, _a3 int) (*[]types.User, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3)
+
+	var r0 *[]types.User
+	if rf, ok := ret.Get(0).(func(string, string, int, int) *[]types.User); ok {
+		r0 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]types.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, string, int, int) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetUsersMap provides a mock function with given fields: _a0
 func (_m *DemoService) GetUsersMap(_a0 string) (map[int]types.User, error) {
 	ret := _m.Called(_a0)

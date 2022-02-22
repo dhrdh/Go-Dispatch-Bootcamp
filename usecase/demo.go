@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"Go-Dispatch-Bootcamp/types"
 	"errors"
 	"fmt"
-	"log"
+
+	"Go-Dispatch-Bootcamp/types"
 )
 
 const feedUrl = "http://localhost:8080/api/v1/feed"
@@ -13,6 +13,7 @@ const feedFileName = "data/feed.csv"
 
 type demoService interface {
 	GetUsers(string) (*[]types.User, error)
+	GetUsersConcurrently(string, string, int, int) (*[]types.User, error)
 	GetUsersMap(string) (map[int]types.User, error)
 	GetFeedUsers(string) ([][]string, error)
 	FetchCsvFromRemote(string) ([][]string, error)
@@ -24,16 +25,12 @@ type demoUsecase struct {
 }
 
 func New(s demoService) *demoUsecase {
-	log.Println("In usecase | constructor")
-
 	return &demoUsecase{
 		service: s,
 	}
 }
 
 func (tu *demoUsecase) Fetch() (*[]types.User, error) {
-	log.Println("In usecase | Fetch")
-
 	users, err := tu.service.GetUsers(dataFileName)
 
 	if err != nil {
@@ -43,9 +40,17 @@ func (tu *demoUsecase) Fetch() (*[]types.User, error) {
 	return users, nil
 }
 
-func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
-	log.Println("In usecase | FetchById")
+func (tu *demoUsecase) FetchConcurrently(idType string, items int, itemsPerWorker int) (*[]types.User, error) {
+	users, err := tu.service.GetUsersConcurrently(dataFileName, idType, items, itemsPerWorker)
 
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 	users, err := tu.service.GetUsersMap(dataFileName)
 
 	if err != nil {
@@ -62,14 +67,10 @@ func (tu *demoUsecase) FetchById(id int) (*types.User, error) {
 }
 
 func (tu *demoUsecase) Feed() ([][]string, error) {
-	log.Println("In usecase | Feed")
-
 	return tu.service.GetFeedUsers(feedFileName)
 }
 
 func (tu *demoUsecase) UpdateUsersFromFeed() (bool, error) {
-	log.Println("In usecase | UpdateUsersFromFeed")
-
 	csvUsers, err := tu.service.FetchCsvFromRemote(feedUrl)
 
 	if err != nil {

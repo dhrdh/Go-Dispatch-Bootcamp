@@ -1,12 +1,14 @@
 package service
 
 import (
-	"Go-Dispatch-Bootcamp/types"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"reflect"
 	"strings"
 	"testing"
+
+	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -195,7 +197,7 @@ func Test_demoService_FetchCsvFromRemote(t *testing.T) {
 		want [][]string
 	}{
 		{
-			name: "Get users. Success story.",
+			name: "Fetch csv from remote. Success story.",
 			ts:   &demoService{},
 			want: feedFileData,
 		},
@@ -204,7 +206,7 @@ func Test_demoService_FetchCsvFromRemote(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			result, err := tt.ts.FetchCsvFromRemote(feedUrl)
 
-			if strings.Contains(err.Error(), "connection refused") {
+			if err != nil && strings.Contains(err.Error(), "connection refused") {
 				log.Printf("error: %v", err)
 				log.Fatalf("Make sure the server is up on port 8080")
 			}

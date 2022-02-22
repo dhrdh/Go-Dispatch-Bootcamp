@@ -5,16 +5,17 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"strconv"
 
 	"Go-Dispatch-Bootcamp/types"
+
+	"github.com/gorilla/mux"
 )
 
 type usecase interface {
 	Fetch() (*[]types.User, error)
+	FetchConcurrently(string, int, int) (*[]types.User, error)
 	FetchById(int) (*types.User, error)
 	Feed() ([][]string, error)
 	UpdateUsersFromFeed() (bool, error)
@@ -25,8 +26,6 @@ type demoController struct {
 }
 
 func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | Fetch")
-
 	users, err := tc.usecase.Fetch()
 
 	if err != nil {
@@ -42,9 +41,37 @@ func (tc *demoController) Fetch(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | FetchById")
+func (tc *demoController) FetchConcurrently(w http.ResponseWriter, r *http.Request) {
+	idType := r.URL.Query().Get("type")
 
+	items, err := strconv.Atoi(r.URL.Query().Get("items"))
+	if err != nil {
+		fmt.Println("Items parameter is invalid")
+		items = 2
+	}
+
+	itemsPerWorkers, err := strconv.Atoi(r.URL.Query().Get("items_per_workers"))
+	if err != nil {
+		fmt.Println("ItemsPerWorkers parameter is invalid")
+		itemsPerWorkers = 2
+	}
+
+	users, err := tc.usecase.FetchConcurrently(idType, items, itemsPerWorkers)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "FetchConcurrently error: %v", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	data, _ := json.Marshal(users)
+	w.Write(data)
+}
+
+func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	stringId, ok := vars["id"]
 	if !ok {
@@ -77,8 +104,6 @@ func (tc *demoController) FetchById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | Feed")
-
 	users, err := tc.usecase.Feed()
 
 	if err != nil {
@@ -95,8 +120,6 @@ func (tc *demoController) Feed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Request) {
-	log.Println("In controller | UpdateUsersFromFeed")
-
 	success, err := tc.usecase.UpdateUsersFromFeed()
 
 	if err != nil {
@@ -111,8 +134,6 @@ func (tc *demoController) UpdateUsersFromFeed(w http.ResponseWriter, r *http.Req
 }
 
 func New(uc usecase) *demoController {
-	log.Println("In controller | constructor")
-
 	return &demoController{
 		usecase: uc,
 	}
